@@ -21,8 +21,22 @@ import google.generativeai as genai
 import json
 import re
 
+def setup_google_credentials():
+    credentials_json = os.getenv('GOOGLE_CREDENTIALS_JSON')
+    if credentials_json:
+        try:
+            # Write the JSON content to a file
+            with open('google-credentials.json', 'w') as f:
+                f.write(credentials_json)
+            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './google-credentials.json'
+            print("✅ Google credentials file created successfully")
+        except Exception as e:
+            print(f"❌ Failed to create credentials file: {e}")
+
 # Load environment variables from .env file
 load_dotenv("../.env")
+
+setup_google_credentials()
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -415,4 +429,5 @@ if __name__ == "__main__":
     import uvicorn
     import os
     port = int(os.environ.get('PORT', 8000))
+
     uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
